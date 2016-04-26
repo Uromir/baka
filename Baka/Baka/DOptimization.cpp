@@ -2,6 +2,7 @@
 
 bool DOptimization::isOptimal(double x)
 {
+	vector<vector<double>> multipleMatrix;
 	return false;
 }
 
