@@ -30,3 +30,8 @@ vector<double> Plan::operator[](int i)
 {
 	return plan[i];
 }
+
+void Plan::enlarge()
+{
+
+}

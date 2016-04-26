@@ -8,6 +8,7 @@ class DOptimization
 private:
 	Plan optimal; // оптимальный план
 	OwnershipFunction *mainOwnershipFunction;
+	LocalModel *mainLocalModel;
 	double beginPoint;
 	double endPoint;
 	double step;

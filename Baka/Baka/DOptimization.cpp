@@ -2,7 +2,18 @@
 
 bool DOptimization::isOptimal(double x)
 {
-	vector<vector<double>> multipleMatrix;
+	vector<vector<double>> matrixFisherInX = mainLocalModel->invertMatrix(mainLocalModel->calcFisherMatrixInX(*mainOwnershipFunction, x));
+	vector<vector<double>> matrixFisher = mainLocalModel->getFisherMatrix();
+	vector<double> multipleMatrix;
+	double sum = 0;
+	for (int i = 0; i < mainOwnershipFunction->clasterCount * 2; i++)
+	{
+		for (int j = 0; j < mainOwnershipFunction->clasterCount * 2; j++)
+		{
+			multipleMatrix[i] += (*mainOwnershipFunction)[i][j] * matrixFisherInX[j][i];
+		}
+		sum += multipleMatrix[i];
+	}
 	return false;
 }
 
@@ -10,9 +21,12 @@ DOptimization::DOptimization(Plan beginNonsingularPlan, double beginPoint, doubl
 {
 	optimal = beginNonsingularPlan;
 	mainOwnershipFunction = new OwnershipFunction(4, 2, 0.1, 5);
+	mainLocalModel = new LocalModel();
 	this->beginPoint = beginPoint;
 	this->endPoint = endPoint;
 	this->step = step;
+	mainOwnershipFunction->calcFCM(optimal[0]);
+	mainLocalModel->calcFisherMatrix(*mainOwnershipFunction, optimal);
 }
 
 
@@ -28,7 +42,6 @@ Plan DOptimization::getPlan()
 
 Plan DOptimization::optimizePlan()
 {
-	mainOwnershipFunction->calcFCM(optimal[0]);
 
 	for (double x = beginPoint; x <= endPoint; x += step)
 	{
@@ -38,6 +51,7 @@ Plan DOptimization::optimizePlan()
 		}
 		else 
 		{
+			optimal.enlarge();
 			optimizePlan();
 		}
 	}

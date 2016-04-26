@@ -15,6 +15,7 @@ public:
 	vector<vector<double>> calcFisherMatrix(OwnershipFunction FCMfunction, Plan mainPlan); // вычислить матрицу фишера
 	vector<vector<double>> calcFisherMatrixInX(OwnershipFunction FCMFunction, double x);
 	vector<vector<double>> invertMatrix(vector<vector<double>> matrix);
+	vector<vector<double>> getFisherMatrix();
 	LocalModel();
 	~LocalModel();
 };

@@ -119,6 +119,11 @@ vector<vector<double>> LocalModel::calcFisherMatrixInX(OwnershipFunction FCMFunc
 	}
 }
 
+vector<vector<double>> LocalModel::getFisherMatrix()
+{
+	return fisherMatrix;
+}
+
 LocalModel::LocalModel()
 {
 }
