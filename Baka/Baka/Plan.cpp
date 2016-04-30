@@ -31,7 +31,13 @@ vector<double> Plan::operator[](int i)
 	return plan[i];
 }
 
-void Plan::enlarge()
+void Plan::enlarge(double x)
 {
-
+	for (int i = 0; i < remarkCount; i++)
+	{
+		plan[1][i] /= 2;
+	}
+	remarkCount++;
+	plan[0].push_back(x);
+	plan[1].push_back(0.5);
 }

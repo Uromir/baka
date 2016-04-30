@@ -117,6 +117,8 @@ vector<vector<double>> LocalModel::calcFisherMatrixInX(OwnershipFunction FCMFunc
 			matrix[i + 1][j * 2 + 1] = newOwnershipValue[i] * newOwnershipValue[j] * x * x * weight;
 		}
 	}
+
+	return matrix;
 }
 
 vector<vector<double>> LocalModel::getFisherMatrix()

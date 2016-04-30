@@ -1,6 +1,6 @@
 #include "DOptimization.h"
 
-bool DOptimization::isOptimal(double x)
+double DOptimization::isOptimal(double x)
 {
 	vector<vector<double>> matrixFisherInX = mainLocalModel->invertMatrix(mainLocalModel->calcFisherMatrixInX(*mainOwnershipFunction, x));
 	vector<vector<double>> matrixFisher = mainLocalModel->getFisherMatrix();
@@ -14,7 +14,7 @@ bool DOptimization::isOptimal(double x)
 		}
 		sum += multipleMatrix[i];
 	}
-	return false;
+	return sum;
 }
 
 DOptimization::DOptimization(Plan beginNonsingularPlan, double beginPoint, double endPoint, double step)
@@ -42,17 +42,24 @@ Plan DOptimization::getPlan()
 
 Plan DOptimization::optimizePlan()
 {
-
+	double maxX = 0;
+	double maxTrace = 0;
 	for (double x = beginPoint; x <= endPoint; x += step)
 	{
-		if (isOptimal(x))
+		double trace = isOptimal(x);
+
+		if (abs(trace - mainOwnershipFunction->elementCount) > 0.0001)
 		{
+			if (abs(maxTrace - mainOwnershipFunction->elementCount) > abs(trace - mainOwnershipFunction->elementCount))
+			{
+				maxTrace = trace;
+				maxX = x;
+			}
+
+		}
+		else
 			return optimal;
-		}
-		else 
-		{
-			optimal.enlarge();
-			optimizePlan();
-		}
 	}
+	optimal.enlarge(maxX);
+	return optimizePlan();
 }

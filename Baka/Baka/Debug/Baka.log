@@ -1,2 +1,19 @@
-﻿  OwnershipFunction.cpp
-  Baka.vcxproj -> C:\Users\Anzhelika\documents\visual studio 2015\Projects\Baka\Debug\Baka.exe
+﻿  Plan.cpp
+  LocalModel.cpp
+c:\users\youra\desktop\my project\baka\baka\baka\localmodel.cpp(7): warning C4018: '<': signed/unsigned mismatch
+c:\users\youra\desktop\my project\baka\baka\baka\localmodel.cpp(9): warning C4018: '<': signed/unsigned mismatch
+c:\users\youra\desktop\my project\baka\baka\baka\localmodel.cpp(24): warning C4018: '<': signed/unsigned mismatch
+c:\users\youra\desktop\my project\baka\baka\baka\localmodel.cpp(26): warning C4018: '<': signed/unsigned mismatch
+c:\users\youra\desktop\my project\baka\baka\baka\localmodel.cpp(38): warning C4018: '<': signed/unsigned mismatch
+c:\users\youra\desktop\my project\baka\baka\baka\localmodel.cpp(44): warning C4018: '<': signed/unsigned mismatch
+c:\users\youra\desktop\my project\baka\baka\baka\localmodel.cpp(48): warning C4018: '<': signed/unsigned mismatch
+c:\users\youra\desktop\my project\baka\baka\baka\localmodel.cpp(54): warning C4018: '<': signed/unsigned mismatch
+c:\users\youra\desktop\my project\baka\baka\baka\localmodel.cpp(58): warning C4018: '<': signed/unsigned mismatch
+c:\users\youra\desktop\my project\baka\baka\baka\localmodel.cpp(72): warning C4018: '<': signed/unsigned mismatch
+c:\users\youra\desktop\my project\baka\baka\baka\localmodel.cpp(80): warning C4018: '<': signed/unsigned mismatch
+c:\users\youra\desktop\my project\baka\baka\baka\localmodel.cpp(81): warning C4018: '<': signed/unsigned mismatch
+c:\users\youra\desktop\my project\baka\baka\baka\localmodel.cpp(109): warning C4018: '<': signed/unsigned mismatch
+c:\users\youra\desktop\my project\baka\baka\baka\localmodel.cpp(111): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+  LINK : C:\Users\Youra\Desktop\my project\baka\Baka\Debug\Baka.exe not found or not built by the last incremental link; performing full link
+  Baka.vcxproj -> C:\Users\Youra\Desktop\my project\baka\Baka\Debug\Baka.exe

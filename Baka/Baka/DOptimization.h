@@ -12,7 +12,7 @@ private:
 	double beginPoint;
 	double endPoint;
 	double step;
-	bool isOptimal(double x);
+	double isOptimal(double x);
 public:
 	Plan getPlan(); // получить план
 	DOptimization(Plan beginNonsingularPlan, double beginPoint, double endPoint, double step);
