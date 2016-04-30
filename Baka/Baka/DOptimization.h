@@ -11,7 +11,7 @@ private:
 	LocalModel *mainLocalModel;
 	double beginPoint;
 	double endPoint;
-	double step;
+	double step; // ожидается 0.01
 	double isOptimal(double x);
 public:
 	Plan getPlan(); // получить план

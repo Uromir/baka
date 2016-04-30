@@ -12,6 +12,7 @@ public:
 	int remarkCount; // количество наблюдений
 	vector<vector<double>> plan;
 	void enlarge(double x);
+	void clean();
 	Plan();
 	~Plan();
 	vector<double> operator[](int i);

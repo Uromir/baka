@@ -25,8 +25,6 @@ DOptimization::DOptimization(Plan beginNonsingularPlan, double beginPoint, doubl
 	this->beginPoint = beginPoint;
 	this->endPoint = endPoint;
 	this->step = step;
-	mainOwnershipFunction->calcFCM(optimal[0]);
-	mainLocalModel->calcFisherMatrix(*mainOwnershipFunction, optimal);
 }
 
 
@@ -44,6 +42,12 @@ Plan DOptimization::optimizePlan()
 {
 	double maxX = 0;
 	double maxTrace = 0;
+
+	mainOwnershipFunction->calcFCM(optimal[0]);
+	mainLocalModel->calcFisherMatrix(*mainOwnershipFunction, optimal);
+
+	optimal.clean();
+
 	for (double x = beginPoint; x <= endPoint; x += step)
 	{
 		double trace = isOptimal(x);
