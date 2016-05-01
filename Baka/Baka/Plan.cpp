@@ -13,8 +13,9 @@ void Plan::readPlan()
 	}
 }
 
-Plan::Plan()
+Plan::Plan(int remarkCount)
 {
+	this->remarkCount = remarkCount;
 	plan.resize(2);
 	plan[0].resize(remarkCount);
 	plan[1].resize(remarkCount);

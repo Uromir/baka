@@ -13,7 +13,7 @@ public:
 	vector<vector<double>> plan;
 	void enlarge(double x);
 	void clean();
-	Plan();
+	Plan(int remarkCount);
 	~Plan();
 	vector<double> operator[](int i);
 };

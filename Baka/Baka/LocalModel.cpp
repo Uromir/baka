@@ -4,15 +4,18 @@
 vector<vector<double>> LocalModel::linearFisher(vector<double> FCMLine, double x, double weight)
 {
 	vector<vector<double>> currentFisherMatrix;
+	currentFisherMatrix.resize(FCMLine.size() * 2);
 	for (int i = 0; i < FCMLine.size(); i++)
 	{
+		currentFisherMatrix[i * 2].resize(FCMLine.size() * 2);
+		currentFisherMatrix[i * 2 + 1].resize(FCMLine.size() * 2);
 		for (int j = 0; j < FCMLine.size(); j++)
 		{
-			currentFisherMatrix[i][j * 2] = FCMLine[i] * FCMLine[j] * weight;
-			currentFisherMatrix[i + 1][j * 2] = FCMLine[i] * FCMLine[j] * x * weight;
+			currentFisherMatrix[i * 2][j * 2] = FCMLine[i] * FCMLine[j] * weight;
+			currentFisherMatrix[i * 2 + 1][j * 2] = FCMLine[i] * FCMLine[j] * x * weight;
 			
-			currentFisherMatrix[i][j * 2 + 1] = FCMLine[i] * FCMLine[j] * x * weight;
-			currentFisherMatrix[i + 1][j * 2 + 1] = FCMLine[i] * FCMLine[j] * x * x * weight;
+			currentFisherMatrix[i * 2][j * 2 + 1] = FCMLine[i] * FCMLine[j] * x * weight;
+			currentFisherMatrix[i * 2 + 1][j * 2 + 1] = FCMLine[i] * FCMLine[j] * x * x * weight;
 		}
 	}
 	return fisherMatrix;
@@ -104,17 +107,21 @@ vector<vector<double>> LocalModel::calcFisherMatrixInX(OwnershipFunction FCMFunc
 	vector<double> newOwnershipValue = FCMFunction.FCMLineInX(x);
 	vector<vector<double>> matrix;
 
+	matrix.resize(newOwnershipValue.size() * 2);
+
 	double weight = 1; // какой-то вес, его надо понять откуда брать
 
 	for (int i = 0; i < newOwnershipValue.size(); i++)
 	{
+		matrix[i * 2].resize(newOwnershipValue.size() * 2);
+		matrix[i * 2 + 1].resize(newOwnershipValue.size() * 2);
 		for (int j = 0; j < newOwnershipValue.size(); j++)
 		{
-			matrix[i][j * 2] = newOwnershipValue[i] * newOwnershipValue[j] * weight;
-			matrix[i + 1][j * 2] = newOwnershipValue[i] * newOwnershipValue[j] * x * weight;
+			matrix[i * 2][j * 2] = newOwnershipValue[i] * newOwnershipValue[j] * weight;
+			matrix[i * 2 + 1][j * 2] = newOwnershipValue[i] * newOwnershipValue[j] * x * weight;
 
-			matrix[i][j * 2 + 1] = newOwnershipValue[i] * newOwnershipValue[j] * x * weight;
-			matrix[i + 1][j * 2 + 1] = newOwnershipValue[i] * newOwnershipValue[j] * x * x * weight;
+			matrix[i * 2][j * 2 + 1] = newOwnershipValue[i] * newOwnershipValue[j] * x * weight;
+			matrix[i * 2 + 1][j * 2 + 1] = newOwnershipValue[i] * newOwnershipValue[j] * x * x * weight;
 		}
 	}
 

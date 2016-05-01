@@ -2,25 +2,25 @@
 
 double DOptimization::isOptimal(double x)
 {
-	vector<vector<double>> matrixFisherInX = mainLocalModel->invertMatrix(mainLocalModel->calcFisherMatrixInX(*mainOwnershipFunction, x));
+	vector<vector<double>> matrixFisherInX = (mainLocalModel->calcFisherMatrixInX(*mainOwnershipFunction, x)); // тут типо обратная
 	vector<vector<double>> matrixFisher = mainLocalModel->getFisherMatrix();
 	vector<double> multipleMatrix;
+	multipleMatrix.resize(mainOwnershipFunction->clasterCount * 2);
 	double sum = 0;
 	for (int i = 0; i < mainOwnershipFunction->clasterCount * 2; i++)
 	{
 		for (int j = 0; j < mainOwnershipFunction->clasterCount * 2; j++)
 		{
-			multipleMatrix[i] += (*mainOwnershipFunction)[i][j] * matrixFisherInX[j][i];
+			multipleMatrix[i] += matrixFisher[i][j] * matrixFisherInX[j][i];
 		}
 		sum += multipleMatrix[i];
 	}
 	return sum;
 }
 
-DOptimization::DOptimization(Plan beginNonsingularPlan, double beginPoint, double endPoint, double step)
+DOptimization::DOptimization(Plan *beginNonsingularPlan, double beginPoint, double endPoint, double step)
 {
 	optimal = beginNonsingularPlan;
-	mainOwnershipFunction = new OwnershipFunction(4, 2, 0.1, 5);
 	mainLocalModel = new LocalModel();
 	this->beginPoint = beginPoint;
 	this->endPoint = endPoint;
@@ -35,7 +35,7 @@ DOptimization::~DOptimization()
 
 Plan DOptimization::getPlan()
 {
-	return optimal;
+	return *optimal;
 }
 
 Plan DOptimization::optimizePlan()
@@ -43,10 +43,11 @@ Plan DOptimization::optimizePlan()
 	double maxX = 0;
 	double maxTrace = 0;
 
-	mainOwnershipFunction->calcFCM(optimal[0]);
-	mainLocalModel->calcFisherMatrix(*mainOwnershipFunction, optimal);
+	mainOwnershipFunction = new OwnershipFunction(4, 2, 0.1, optimal->remarkCount);
+	mainOwnershipFunction->calcFCM((*optimal)[0]);
+	mainLocalModel->calcFisherMatrix(*mainOwnershipFunction, *optimal);
 
-	optimal.clean();
+	optimal->clean();
 
 	for (double x = beginPoint; x <= endPoint; x += step)
 	{
@@ -62,8 +63,8 @@ Plan DOptimization::optimizePlan()
 
 		}
 		else
-			return optimal;
+			return *optimal;
 	}
-	optimal.enlarge(maxX);
+	optimal->enlarge(maxX);
 	return optimizePlan();
 }

@@ -6,7 +6,7 @@
 class DOptimization
 {
 private:
-	Plan optimal; // оптимальный план
+	Plan *optimal; // оптимальный план
 	OwnershipFunction *mainOwnershipFunction;
 	LocalModel *mainLocalModel;
 	double beginPoint;
@@ -15,7 +15,7 @@ private:
 	double isOptimal(double x);
 public:
 	Plan getPlan(); // получить план
-	DOptimization(Plan beginNonsingularPlan, double beginPoint, double endPoint, double step);
+	DOptimization(Plan *beginNonsingularPlan, double beginPoint, double endPoint, double step);
 	Plan optimizePlan();
 	~DOptimization();
 };
