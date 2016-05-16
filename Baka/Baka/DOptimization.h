@@ -2,6 +2,7 @@
 #include "OwnershipFunction.h"
 #include "LocalModel.h"
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -19,7 +20,8 @@ private:
 public:
 	Plan getPlan(); // получить план
 	DOptimization(Plan *beginNonsingularPlan, double beginPoint, double endPoint, double step);
-	Plan optimizePlan();
+	Plan optimizeСontinuousPlan();
+	Plan optimizeDiscretePlan();
 	~DOptimization();
 };
 

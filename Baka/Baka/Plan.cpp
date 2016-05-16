@@ -41,36 +41,31 @@ void Plan::enlarge(double x)
 	remarkCount++;
 	plan[0].push_back(x);
 	plan[1].push_back(0.5);
+}
 
-	// <----Считаем определитель---->
-
-	/*p = 0;
-	for (int i = 0; i < n - 1; i++)
+void Plan::enlargeDiscrete(double x)
+{
+	remarkCount++;
+	plan[0].push_back(x);
+	plan[1].push_back(1);
+	for (int i = 0; i < remarkCount; i++)
 	{
-		t = 1;
-		while (a[i][i] == 0)
-		{
-			for (j = 0; j<n; j++)
-			{
-				a[i][j] = kst;
-				a[i][j] = a[i + t][j];
-				a[i + t][j] = kst;
-			}
-			p++;
-			t++;
-		}
+		plan[1][i] = 1.0 / remarkCount;
+	}
+}
 
-		for (k = i + 1; k<n; k++)
+void Plan::reduce(double x)
+{
+	remarkCount--;
+	for (int i = 0; i < remarkCount; i++)
+	{
+		if (x == plan[0][i])
 		{
-			kst = a[k][i] / a[i][i];
-			for (j = 0; j<n; j++)
-				a[k][j] -= a[i][j] * kst;
+			plan[0].erase(plan[0].begin() + i);
+			plan[1].erase(plan[1].begin() + i);
+			break;
 		}
 	}
-
-	kst = pow(-1, p);
-	for (i = 0; i<n; i++)
-		kst *= a[i][i];*/
 }
 
 void Plan::clean()
