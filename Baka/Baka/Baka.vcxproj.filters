@@ -47,5 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="plan.txt" />
+    <Text Include="clasterCenter.txt" />
+    <Text Include="fisher.txt" />
   </ItemGroup>
 </Project>

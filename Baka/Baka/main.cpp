@@ -2,8 +2,8 @@
 
 int main()
 {
-	Plan mainPlan(4);
-	DOptimization mainOptimizationAlgoritm(&mainPlan, -1, 1, 0.01);
-	mainOptimizationAlgoritm.optimizePlan();
+	Plan mainPlan(6);
+	DOptimization mainOptimizationAlgoritm(&mainPlan, -0.9, 0.9, 0.01);
+	Plan optimal = mainOptimizationAlgoritm.optimizePlan();
 	return 0;
 }

@@ -2,8 +2,8 @@
 
 double DOptimization::isOptimal(double x)
 {
-	vector<vector<double>> matrixFisherInX = (mainLocalModel->calcFisherMatrixInX(*mainOwnershipFunction, x)); // тут типо обратная
-	vector<vector<double>> matrixFisher = mainLocalModel->getFisherMatrix();
+	vector<vector<double>> matrixFisherInX = mainLocalModel->calcFisherMatrixInX(*mainOwnershipFunction, x);
+	vector<vector<double>> matrixFisher = mainLocalModel->invertMatrix(mainLocalModel->getFisherMatrix());
 	vector<double> multipleMatrix;
 	multipleMatrix.resize(mainOwnershipFunction->clasterCount * 2);
 	double sum = 0;
@@ -43,11 +43,9 @@ Plan DOptimization::optimizePlan()
 	double maxX = 0;
 	double maxTrace = 0;
 
-	mainOwnershipFunction = new OwnershipFunction(4, 2, 0.1, optimal->remarkCount);
-	mainOwnershipFunction->calcFCM((*optimal)[0]);
+	mainOwnershipFunction = new OwnershipFunction(3, 2, 0.1, optimal->remarkCount);
+	mainOwnershipFunction->calcFCMWithoutCenter((*optimal)[0]);
 	mainLocalModel->calcFisherMatrix(*mainOwnershipFunction, *optimal);
-
-	optimal->clean();
 
 	for (double x = beginPoint; x <= endPoint; x += step)
 	{
@@ -60,11 +58,15 @@ Plan DOptimization::optimizePlan()
 				maxTrace = trace;
 				maxX = x;
 			}
-
 		}
 		else
 			return *optimal;
 	}
+	
 	optimal->enlarge(maxX);
+	optimal->clean();
+
+	cout << maxTrace << endl;
+
 	return optimizePlan();
 }

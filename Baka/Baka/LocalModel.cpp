@@ -18,7 +18,7 @@ vector<vector<double>> LocalModel::linearFisher(vector<double> FCMLine, double x
 			currentFisherMatrix[i * 2 + 1][j * 2 + 1] = FCMLine[i] * FCMLine[j] * x * x * weight;
 		}
 	}
-	return fisherMatrix;
+	return currentFisherMatrix;
 }
 
 /* добавить к существующей матрице фишера новое слагаемое */
@@ -109,19 +109,17 @@ vector<vector<double>> LocalModel::calcFisherMatrixInX(OwnershipFunction FCMFunc
 
 	matrix.resize(newOwnershipValue.size() * 2);
 
-	double weight = 1; // какой-то вес, его надо понять откуда брать
-
 	for (int i = 0; i < newOwnershipValue.size(); i++)
 	{
 		matrix[i * 2].resize(newOwnershipValue.size() * 2);
 		matrix[i * 2 + 1].resize(newOwnershipValue.size() * 2);
 		for (int j = 0; j < newOwnershipValue.size(); j++)
 		{
-			matrix[i * 2][j * 2] = newOwnershipValue[i] * newOwnershipValue[j] * weight;
-			matrix[i * 2 + 1][j * 2] = newOwnershipValue[i] * newOwnershipValue[j] * x * weight;
+			matrix[i * 2][j * 2] = newOwnershipValue[i] * newOwnershipValue[j];
+			matrix[i * 2 + 1][j * 2] = newOwnershipValue[i] * newOwnershipValue[j] * x;
 
-			matrix[i * 2][j * 2 + 1] = newOwnershipValue[i] * newOwnershipValue[j] * x * weight;
-			matrix[i * 2 + 1][j * 2 + 1] = newOwnershipValue[i] * newOwnershipValue[j] * x * x * weight;
+			matrix[i * 2][j * 2 + 1] = newOwnershipValue[i] * newOwnershipValue[j] * x;
+			matrix[i * 2 + 1][j * 2 + 1] = newOwnershipValue[i] * newOwnershipValue[j] * x * x;
 		}
 	}
 

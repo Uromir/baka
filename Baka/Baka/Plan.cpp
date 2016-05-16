@@ -41,6 +41,36 @@ void Plan::enlarge(double x)
 	remarkCount++;
 	plan[0].push_back(x);
 	plan[1].push_back(0.5);
+
+	// <----Считаем определитель---->
+
+	/*p = 0;
+	for (int i = 0; i < n - 1; i++)
+	{
+		t = 1;
+		while (a[i][i] == 0)
+		{
+			for (j = 0; j<n; j++)
+			{
+				a[i][j] = kst;
+				a[i][j] = a[i + t][j];
+				a[i + t][j] = kst;
+			}
+			p++;
+			t++;
+		}
+
+		for (k = i + 1; k<n; k++)
+		{
+			kst = a[k][i] / a[i][i];
+			for (j = 0; j<n; j++)
+				a[k][j] -= a[i][j] * kst;
+		}
+	}
+
+	kst = pow(-1, p);
+	for (i = 0; i<n; i++)
+		kst *= a[i][i];*/
 }
 
 void Plan::clean()
@@ -71,10 +101,10 @@ void Plan::clean()
 			plan[1][i] = sumP;
 			plan[0][i] = (1 / sumP) * sumX;
 
-			for (int j = 1; j < numbersForClean.size(); j++)
+			for (int j = numbersForClean.size(); j > 0 ; j--)
 			{
-				plan[0].erase(plan[0].begin() + j);
-				plan[1].erase(plan[1].begin() + j);
+				plan[0].erase(plan[0].begin() + numbersForClean[j - 1]);
+				plan[1].erase(plan[1].begin() + numbersForClean[j - 1]);
 				remarkCount--;
 			}
 		}

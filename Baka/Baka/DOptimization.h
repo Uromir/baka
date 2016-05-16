@@ -1,6 +1,9 @@
 ﻿#include "Plan.h"
 #include "OwnershipFunction.h"
 #include "LocalModel.h"
+#include <iostream>
+
+using namespace std;
 
 #pragma once
 class DOptimization

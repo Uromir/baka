@@ -1,3 +1,5 @@
-﻿  DOptimization.cpp
-cl : Command line warning D9028: minimal rebuild failure, reverting to normal build
+﻿  Plan.cpp
+c:\users\youra\desktop\my project\baka\baka\baka\plan.cpp(95): warning C4018: '<': signed/unsigned mismatch
+  DOptimization.cpp
+  Generating Code...
   Baka.vcxproj -> C:\Users\Youra\Desktop\my project\baka\Baka\Debug\Baka.exe
