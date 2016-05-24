@@ -21,6 +21,34 @@ vector<vector<double>> LocalModel::linearFisher(vector<double> FCMLine, double x
 	return currentFisherMatrix;
 }
 
+/* вычисление матрицы фишера одной итерации по квадратичной модели */
+vector<vector<double>> LocalModel::squareFisher(vector<double> FCMLine, double x, double weight)
+{
+	vector<vector<double>> currentFisherMatrix;
+	currentFisherMatrix.resize(FCMLine.size() * 3);
+	for (int i = 0; i < FCMLine.size(); i++)
+	{
+		currentFisherMatrix[i * 3].resize(FCMLine.size() * 3);
+		currentFisherMatrix[i * 3 + 1].resize(FCMLine.size() * 3);
+		currentFisherMatrix[i * 3 + 2].resize(FCMLine.size() * 3);
+		for (int j = 0; j < FCMLine.size(); j++)
+		{
+			currentFisherMatrix[i * 3][j * 3] = FCMLine[i] * FCMLine[j] * weight;
+			currentFisherMatrix[i * 3 + 1][j * 3] = FCMLine[i] * FCMLine[j] * x * weight;
+			currentFisherMatrix[i * 3 + 2][j * 3] = FCMLine[i] * FCMLine[j] * x * x * weight;
+
+			currentFisherMatrix[i * 3][j * 3 + 1] = FCMLine[i] * FCMLine[j] * x * weight;
+			currentFisherMatrix[i * 3 + 1][j * 3 + 1] = FCMLine[i] * FCMLine[j] * x * x * weight;
+			currentFisherMatrix[i * 3 + 2][j * 3 + 1] = FCMLine[i] * FCMLine[j] * x * x * x * weight;
+
+			currentFisherMatrix[i * 3][j * 3 + 2] = FCMLine[i] * FCMLine[j] * x * x * weight;
+			currentFisherMatrix[i * 3 + 1][j * 3 + 2] = FCMLine[i] * FCMLine[j] * x * x * x * weight;
+			currentFisherMatrix[i * 3 + 2][j * 3 + 2] = FCMLine[i] * FCMLine[j] * x * x * x * x * weight;
+		}
+	}
+	return currentFisherMatrix;
+}
+
 /* добавить к существующей матрице фишера новое слагаемое */
 void LocalModel::sumFromFisher(vector<vector<double>> additingMatrix)
 {
@@ -90,19 +118,20 @@ vector<vector<double>> LocalModel::invertMatrix(vector<vector<double>> matrix)
 /* вычислить матрицу фишера */
 vector<vector<double>> LocalModel::calcFisherMatrix(OwnershipFunction FCMfunction, Plan mainPlan)
 {
-	fisherMatrix.resize(2 * FCMfunction.clasterCount);
-	for (int i = 0; i < 2 * FCMfunction.clasterCount; i++)
+	int sizeModel = 3;
+	fisherMatrix.resize(sizeModel * FCMfunction.clasterCount);
+	for (int i = 0; i < sizeModel * FCMfunction.clasterCount; i++)
 	{
-		fisherMatrix[i].resize(2 * FCMfunction.clasterCount);
+		fisherMatrix[i].resize(sizeModel * FCMfunction.clasterCount);
 	}
 	for (int i = 0; i < FCMfunction.elementCount; i++)
 	{
-		sumFromFisher(linearFisher(FCMfunction[i], mainPlan[0][i], mainPlan[1][i]));
+		sumFromFisher(squareFisher(FCMfunction[i], mainPlan[0][i], mainPlan[1][i]));
 	}
 	return fisherMatrix;
 }
 
-vector<vector<double>> LocalModel::calcFisherMatrixInX(OwnershipFunction FCMFunction, double x)
+vector<vector<double>> LocalModel::calcLinearFisherMatrixInX(OwnershipFunction FCMFunction, double x)
 {
 	vector<double> newOwnershipValue = FCMFunction.FCMLineInX(x);
 	vector<vector<double>> matrix;
@@ -120,6 +149,37 @@ vector<vector<double>> LocalModel::calcFisherMatrixInX(OwnershipFunction FCMFunc
 
 			matrix[i * 2][j * 2 + 1] = newOwnershipValue[i] * newOwnershipValue[j] * x;
 			matrix[i * 2 + 1][j * 2 + 1] = newOwnershipValue[i] * newOwnershipValue[j] * x * x;
+		}
+	}
+
+	return matrix;
+}
+
+vector<vector<double>> LocalModel::calcSquareFisherMatrixInX(OwnershipFunction FCMFunction, double x)
+{
+	vector<double> newOwnershipValue = FCMFunction.FCMLineInX(x);
+	vector<vector<double>> matrix;
+
+	matrix.resize(newOwnershipValue.size() * 3);
+
+	for (int i = 0; i < newOwnershipValue.size(); i++)
+	{
+		matrix[i * 3].resize(newOwnershipValue.size() * 3);
+		matrix[i * 3 + 1].resize(newOwnershipValue.size() * 3);
+		matrix[i * 3 + 2].resize(newOwnershipValue.size() * 3);
+		for (int j = 0; j < newOwnershipValue.size(); j++)
+		{
+			matrix[i * 3][j * 3] = newOwnershipValue[i] * newOwnershipValue[j];
+			matrix[i * 3 + 1][j * 3] = newOwnershipValue[i] * newOwnershipValue[j] * x;
+			matrix[i * 3 + 2][j * 3] = newOwnershipValue[i] * newOwnershipValue[j] * x * x;
+
+			matrix[i * 3][j * 3 + 1] = newOwnershipValue[i] * newOwnershipValue[j] * x;
+			matrix[i * 3 + 1][j * 3 + 1] = newOwnershipValue[i] * newOwnershipValue[j] * x * x;
+			matrix[i * 3 + 2][j * 3 + 1] = newOwnershipValue[i] * newOwnershipValue[j] * x * x * x;
+
+			matrix[i * 3][j * 3 + 2] = newOwnershipValue[i] * newOwnershipValue[j] * x * x;
+			matrix[i * 3 + 1][j * 3 + 2] = newOwnershipValue[i] * newOwnershipValue[j] * x * x * x;
+			matrix[i * 3 + 2][j * 3 + 2] = newOwnershipValue[i] * newOwnershipValue[j] * x * x * x * x;
 		}
 	}
 

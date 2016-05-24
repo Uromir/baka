@@ -1,3 +1,6 @@
 ﻿  DOptimization.cpp
-c:\users\youra\desktop\my project\baka\baka\baka\doptimization.cpp(109): warning C4018: '<': signed/unsigned mismatch
+c:\users\youra\desktop\my project\baka\baka\baka\doptimization.cpp(7): warning C4018: '<': signed/unsigned mismatch
+c:\users\youra\desktop\my project\baka\baka\baka\doptimization.cpp(11): warning C4018: '<': signed/unsigned mismatch
+c:\users\youra\desktop\my project\baka\baka\baka\doptimization.cpp(13): warning C4018: '<': signed/unsigned mismatch
+c:\users\youra\desktop\my project\baka\baka\baka\doptimization.cpp(131): warning C4018: '<': signed/unsigned mismatch
   Baka.vcxproj -> C:\Users\Youra\Desktop\my project\baka\Baka\Debug\Baka.exe

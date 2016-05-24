@@ -1,15 +1,36 @@
 #include "DOptimization.h"
 
+vector<vector<double>> DOptimization::multMatrix(vector<vector<double>> a, vector<vector<double>> b)
+{
+	vector<vector<double>> result;
+	result.resize(a.size());
+	for (int i = 0; i < a.size(); i++)
+	{
+		result[i].resize(b[i].size());
+
+		for (int j = 0; j < b[i].size(); j++)
+		{
+			for (int k = 0; k < b.size(); k++)
+			{
+				result[i][j] += a[i][k] * b[k][j];
+			}
+		}
+	}
+
+	return result;
+}
+
 double DOptimization::isOptimal(double x)
 {
-	vector<vector<double>> matrixFisherInX = mainLocalModel->calcFisherMatrixInX(*mainOwnershipFunction, x);
+	vector<vector<double>> matrixFisherInX = mainLocalModel->calcSquareFisherMatrixInX(*mainOwnershipFunction, x);
 	vector<vector<double>> matrixFisher = mainLocalModel->invertMatrix(mainLocalModel->getFisherMatrix());
 	vector<double> multipleMatrix;
-	multipleMatrix.resize(mainOwnershipFunction->clasterCount * 2);
+	int sizeModel = 3;
+	multipleMatrix.resize(mainOwnershipFunction->clasterCount * sizeModel);
 	double sum = 0;
-	for (int i = 0; i < mainOwnershipFunction->clasterCount * 2; i++)
+	for (int i = 0; i < mainOwnershipFunction->clasterCount * sizeModel; i++)
 	{
-		for (int j = 0; j < mainOwnershipFunction->clasterCount * 2; j++)
+		for (int j = 0; j < mainOwnershipFunction->clasterCount * sizeModel; j++)
 		{
 			multipleMatrix[i] += matrixFisher[i][j] * matrixFisherInX[j][i];
 		}
@@ -82,6 +103,7 @@ Plan DOptimization::optimizeDiscretePlan()
 	mainOwnershipFunction = new OwnershipFunction(3, 2, 0.1, optimal->remarkCount);
 	mainOwnershipFunction->calcFCMWithoutCenter(arrayX);
 	mainLocalModel->calcFisherMatrix(*mainOwnershipFunction, *optimal);
+	getMNK();
 
 	for (double x = beginPoint; x <= endPoint; x += step)
 	{
@@ -124,4 +146,17 @@ Plan DOptimization::optimizeDiscretePlan()
 		optimal->reduce(minX);
 		return optimizeDiscretePlan();
 	}
+}
+
+vector<double> DOptimization::getMNK(int i)
+{
+	vector<vector<double>> result;
+	result = multMatrix(optimal->getTransponLocalModelMatrix(), mainOwnershipFunction->getDiagOwnershipMatrix(i));
+	result = multMatrix(result, optimal->getLocalModelMatrix());
+	result = mainLocalModel->invertMatrix(result);
+	result = multMatrix(result, optimal->getTransponLocalModelMatrix());
+	result = multMatrix(result, mainOwnershipFunction->getDiagOwnershipMatrix(i));
+
+	vector<double> a;
+	return a;
 }

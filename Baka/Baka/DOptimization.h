@@ -13,6 +13,7 @@ private:
 	Plan *optimal; // оптимальный план
 	OwnershipFunction *mainOwnershipFunction;
 	LocalModel *mainLocalModel;
+	vector<vector<double>> multMatrix(vector<vector<double>> a, vector<vector<double>> b);
 	double beginPoint;
 	double endPoint;
 	double step; // ожидается 0.01
@@ -22,6 +23,7 @@ public:
 	DOptimization(Plan *beginNonsingularPlan, double beginPoint, double endPoint, double step);
 	Plan optimizeСontinuousPlan();
 	Plan optimizeDiscretePlan();
+	vector<double> getMNK(int i);
 	~DOptimization();
 };
 

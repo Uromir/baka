@@ -111,3 +111,34 @@ void Plan::clean()
 		}
 	}
 }
+
+vector<vector<double>> Plan::getLocalModelMatrix()
+{
+	vector<vector<double>> matrix;
+	matrix.resize(remarkCount);
+	for (int i = 0; i < remarkCount; i++)
+	{
+		matrix[i].resize(2);
+
+		matrix[i][0] = 1;
+		matrix[i][1] = plan[0][i];
+	}
+
+	return matrix;
+}
+
+vector<vector<double>> Plan::getTransponLocalModelMatrix()
+{
+	vector<vector<double>> matrix;
+	matrix.resize(2);
+
+	matrix[0].resize(remarkCount);
+	matrix[1].resize(remarkCount);
+	for (int i = 0; i < remarkCount; i++)
+	{
+		matrix[0][i] = 1;
+		matrix[1][i] = plan[0][i];
+	}
+
+	return matrix;
+}

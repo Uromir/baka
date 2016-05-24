@@ -27,6 +27,7 @@ public:
 	void calcFCMWithoutCenter(vector<double> x); // алгоритм FCM с задаваемыми центрами кластеров
 	vector<vector<double>> getOwnerchipMatrix();
 	vector<double> FCMLineInX(double x); // вычислить значение каждой функции принадлежности в переданном Х
+	vector<vector<double>> getDiagOwnershipMatrix(int i);
 	OwnershipFunction(int clasterCount, int exponentialWeight, double eps, int elementCount);
 	~OwnershipFunction();
 	vector<double> operator[](int i);

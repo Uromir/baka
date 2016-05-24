@@ -232,6 +232,19 @@ vector<vector<double>> OwnershipFunction::getOwnerchipMatrix()
 	return ownershipMatrix;
 }
 
+vector<vector<double>> OwnershipFunction::getDiagOwnershipMatrix(int i)
+{
+	vector<vector<double>> result;
+	result.resize(elementCount);
+	for (int j = 0; j < elementCount; j++)
+	{
+		result[j].resize(elementCount);
+		result[j][j] = ownershipMatrix[j][i];
+	}
+
+	return result;
+}
+
 OwnershipFunction::~OwnershipFunction()
 {
 }
