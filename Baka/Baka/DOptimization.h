@@ -23,7 +23,8 @@ public:
 	DOptimization(Plan *beginNonsingularPlan, double beginPoint, double endPoint, double step);
 	Plan optimizeСontinuousPlan();
 	Plan optimizeDiscretePlan();
-	vector<double> getMNK(int i);
+	vector<vector<double>> getMNK(int i);
+	double getRespondValue(int i);
 	~DOptimization();
 };
 

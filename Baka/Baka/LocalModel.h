@@ -18,6 +18,8 @@ public:
 	vector<vector<double>> calcSquareFisherMatrixInX(OwnershipFunction FCMFunction, double x);
 	vector<vector<double>> invertMatrix(vector<vector<double>> matrix);
 	vector<vector<double>> getFisherMatrix();
+	vector<vector<double>> getLocalMatrix();
+	double getY(double x);
 	LocalModel();
 	~LocalModel();
 };

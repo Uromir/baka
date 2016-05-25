@@ -103,7 +103,6 @@ Plan DOptimization::optimizeDiscretePlan()
 	mainOwnershipFunction = new OwnershipFunction(3, 2, 0.1, optimal->remarkCount);
 	mainOwnershipFunction->calcFCMWithoutCenter(arrayX);
 	mainLocalModel->calcFisherMatrix(*mainOwnershipFunction, *optimal);
-	getMNK();
 
 	for (double x = beginPoint; x <= endPoint; x += step)
 	{
@@ -148,7 +147,7 @@ Plan DOptimization::optimizeDiscretePlan()
 	}
 }
 
-vector<double> DOptimization::getMNK(int i)
+vector<vector<double>> DOptimization::getMNK(int i)
 {
 	vector<vector<double>> result;
 	result = multMatrix(optimal->getTransponLocalModelMatrix(), mainOwnershipFunction->getDiagOwnershipMatrix(i));
@@ -156,7 +155,18 @@ vector<double> DOptimization::getMNK(int i)
 	result = mainLocalModel->invertMatrix(result);
 	result = multMatrix(result, optimal->getTransponLocalModelMatrix());
 	result = multMatrix(result, mainOwnershipFunction->getDiagOwnershipMatrix(i));
+	result = multMatrix(result, mainLocalModel->getLocalMatrix());
 
-	vector<double> a;
-	return a;
+	return result;
+}
+
+double DOptimization::getRespondValue(int i)
+{
+	double sum = 0;
+	for (int j = 0; j < mainOwnershipFunction->clasterCount; j++)
+	{
+		sum += mainLocalModel->getY((*optimal)[0][i]) * (*mainOwnershipFunction)[i][j];
+	}
+
+	return sum + sum * (int(pow(-1.0, rand() % 2) * rand()) % 15) / 100;
 }

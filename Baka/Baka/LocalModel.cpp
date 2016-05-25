@@ -191,6 +191,26 @@ vector<vector<double>> LocalModel::getFisherMatrix()
 	return fisherMatrix;
 }
 
+vector<vector<double>> LocalModel::getLocalMatrix()
+{
+	vector<vector<double>> y;
+
+	y.resize(2);
+	
+	y[0].resize(1);
+	y[0][0] = 3;
+	
+	y[1].resize(1);
+	y[1][0] = -1;
+
+	return y;
+}
+
+double LocalModel::getY(double x)
+{
+	return 3 - x;
+}
+
 LocalModel::LocalModel()
 {
 }
