@@ -142,3 +142,14 @@ vector<vector<double>> Plan::getTransponLocalModelMatrix()
 
 	return matrix;
 }
+
+void Plan::createRandomPlan(int elementCount)
+{
+	remarkCount = elementCount;
+	plan[0].resize(remarkCount);
+	plan[1].resize(remarkCount);
+	for (int i = 0; i < remarkCount; i++)
+	{
+		plan[0][i] = pow(-1.0, rand() % 2 + 1) * (double(rand() % 500) / 500);
+	}
+}

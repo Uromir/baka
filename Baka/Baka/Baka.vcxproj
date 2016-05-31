@@ -151,12 +151,14 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OwnershipFunction.cpp" />
     <ClCompile Include="Plan.cpp" />
+    <ClCompile Include="Point.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DOptimization.h" />
     <ClInclude Include="LocalModel.h" />
     <ClInclude Include="OwnershipFunction.h" />
     <ClInclude Include="Plan.h" />
+    <ClInclude Include="Point.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="clasterCenter.txt" />

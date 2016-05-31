@@ -15,6 +15,7 @@ public:
 	void enlargeDiscrete(double x);
 	void reduce(double x);
 	void clean();
+	void createRandomPlan(int elementCount);
 	vector<vector<double>> getLocalModelMatrix();
 	vector<vector<double>> getTransponLocalModelMatrix();
 	Plan(int remarkCount);
