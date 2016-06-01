@@ -4,21 +4,25 @@
 void Plan::readPlan()
 {
 	ifstream in("plan.txt");
-	for (int i = 0; i < 2; i++)
+	double x = 0;
+	for (int i = 0; i < remarkCount; i++)
 	{
-		for (int j = 0; j < remarkCount; j++)
+		Point newPoint = Point(dimensionSpace);
+		for (int j = 0; j < dimensionSpace; j++)
 		{
-			in >> plan[i][j];
+			in >> x;
+			newPoint.coord[j] = x;
 		}
+		in >> newPoint.weight;
+		plan[i] = newPoint;
 	}
 }
 
-Plan::Plan(int remarkCount)
+Plan::Plan(int remarkCount, int dimensionSpace)
 {
 	this->remarkCount = remarkCount;
-	plan.resize(2);
-	plan[0].resize(remarkCount);
-	plan[1].resize(remarkCount);
+	this->dimensionSpace = dimensionSpace;
+	plan.resize(remarkCount);
 	readPlan();
 }
 
@@ -27,42 +31,41 @@ Plan::~Plan()
 {
 }
 
-vector<double> Plan::operator[](int i)
+Point Plan::operator[](int i)
 {
 	return plan[i];
 }
 
-void Plan::enlarge(double x)
+void Plan::enlarge(Point x)
 {
 	for (int i = 0; i < remarkCount; i++)
 	{
-		plan[1][i] /= 2;
+		plan[i].weight /= 2;
 	}
 	remarkCount++;
-	plan[0].push_back(x);
-	plan[1].push_back(0.5);
+	x.weight = 0.5;
+	plan.push_back(x);
 }
 
-void Plan::enlargeDiscrete(double x)
+void Plan::enlargeDiscrete(Point x)
 {
 	remarkCount++;
-	plan[0].push_back(x);
-	plan[1].push_back(1);
+	x.weight = 1;
+	plan.push_back(x);
 	for (int i = 0; i < remarkCount; i++)
 	{
-		plan[1][i] = 1.0 / remarkCount;
+		plan[i].weight = 1.0 / remarkCount;
 	}
 }
 
-void Plan::reduce(double x)
+void Plan::reduce(Point x)
 {
 	remarkCount--;
 	for (int i = 0; i < remarkCount; i++)
 	{
-		if (x == plan[0][i])
+		if (x == plan[i])
 		{
-			plan[0].erase(plan[0].begin() + i);
-			plan[1].erase(plan[1].begin() + i);
+			plan.erase(plan.begin() + i);
 			break;
 		}
 	}
@@ -77,7 +80,7 @@ void Plan::clean()
 		numbersForClean.push_back(i);
 		for (int j = i + 1; j < remarkCount; j++)
 		{
-			if (abs(plan[0][i] - plan[0][j]) < 0.01)
+			if ((plan[i] - plan[j]).Norm() < 0.01)
 			{
 				numbersForClean.push_back(j);
 			}
@@ -86,27 +89,25 @@ void Plan::clean()
 		{
 			processedPoint.push_back(i);
 			double sumP = 0;
-			double sumX = 0;
+			Point sumX(dimensionSpace);
 			for (int j = 0; j < numbersForClean.size(); j++)
 			{
-				sumP += plan[1][j];
-				sumX += plan[0][j] * plan[1][j];
+				sumP += plan[j].weight;
+				sumX = sumX + plan[j] * plan[j].weight;
 			}
 
-			plan[1][i] = sumP;
-			plan[0][i] = (1 / sumP) * sumX;
+			plan[i].weight = sumP;
+			plan[i] = sumX * (1 / sumP);
 
 			for (int j = numbersForClean.size(); j > 0 ; j--)
 			{
-				plan[0].erase(plan[0].begin() + numbersForClean[j - 1]);
-				plan[1].erase(plan[1].begin() + numbersForClean[j - 1]);
+				plan.erase(plan.begin() + numbersForClean[j - 1]);
 				remarkCount--;
 			}
 		}
-		else if (plan[1][i] < 0.01)
+		else if (plan[i].weight < 0.01)
 		{
-			plan[0].erase(plan[0].begin() + i);
-			plan[1].erase(plan[1].begin() + i);
+			plan.erase(plan.begin() + i);
 			remarkCount--;
 		}
 	}
@@ -118,10 +119,11 @@ vector<vector<double>> Plan::getLocalModelMatrix()
 	matrix.resize(remarkCount);
 	for (int i = 0; i < remarkCount; i++)
 	{
-		matrix[i].resize(2);
+		matrix[i].resize(dimensionSpace);
 
 		matrix[i][0] = 1;
-		matrix[i][1] = plan[0][i];
+		for (int j = 0; j < dimensionSpace; j++)
+			matrix[i][j + 1] = plan[i][j];
 	}
 
 	return matrix;
@@ -130,14 +132,17 @@ vector<vector<double>> Plan::getLocalModelMatrix()
 vector<vector<double>> Plan::getTransponLocalModelMatrix()
 {
 	vector<vector<double>> matrix;
-	matrix.resize(2);
+	matrix.resize(dimensionSpace + 1);
 
-	matrix[0].resize(remarkCount);
-	matrix[1].resize(remarkCount);
+	for (int i = 0; i < matrix.size(); i++)
+	{
+		matrix[i].resize(remarkCount);
+	}
 	for (int i = 0; i < remarkCount; i++)
 	{
 		matrix[0][i] = 1;
-		matrix[1][i] = plan[0][i];
+		for (int j = 0; j < dimensionSpace; j++)
+			matrix[j + 1][i] = plan[i][j];
 	}
 
 	return matrix;
@@ -146,10 +151,10 @@ vector<vector<double>> Plan::getTransponLocalModelMatrix()
 void Plan::createRandomPlan(int elementCount)
 {
 	remarkCount = elementCount;
-	plan[0].resize(remarkCount);
-	plan[1].resize(remarkCount);
+	plan.resize(remarkCount);
 	for (int i = 0; i < remarkCount; i++)
 	{
-		plan[0][i] = pow(-1.0, rand() % 2 + 1) * (double(rand() % 500) / 500);
+		for (int j = 0; j < dimensionSpace; j++)
+			plan[i].coord[j] = pow(-1.0, rand() % 2 + 1) * (double(rand() % 500) / 500);
 	}
 }

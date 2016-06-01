@@ -1,5 +1,6 @@
 ﻿#include <vector>
 #include <fstream>
+#include "Point.h"
 
 using namespace std;
 
@@ -9,17 +10,18 @@ class Plan
 private:
 	void readPlan(); // считать начальный план из файла
 public:
+	int dimensionSpace; // мерность пространства
 	int remarkCount; // количество наблюдений
-	vector<vector<double>> plan;
-	void enlarge(double x);
-	void enlargeDiscrete(double x);
-	void reduce(double x);
+	vector<Point> plan;
+	void enlarge(Point x);
+	void enlargeDiscrete(Point x);
+	void reduce(Point x);
 	void clean();
 	void createRandomPlan(int elementCount);
 	vector<vector<double>> getLocalModelMatrix();
 	vector<vector<double>> getTransponLocalModelMatrix();
-	Plan(int remarkCount);
+	Plan(int remarkCount, int dimensionSpace);
 	~Plan();
-	vector<double> operator[](int i);
+	Point operator[](int i);
 };
 
