@@ -30,9 +30,6 @@
     <ClCompile Include="LocalModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Point.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DOptimization.h">
@@ -47,13 +44,12 @@
     <ClInclude Include="LocalModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Point.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="plan.txt" />
     <Text Include="clasterCenter.txt" />
     <Text Include="fisher.txt" />
+    <Text Include="fish.txt" />
+    <Text Include="norm.txt" />
   </ItemGroup>
 </Project>

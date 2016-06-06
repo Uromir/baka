@@ -20,6 +20,7 @@ Plan::Plan(int remarkCount)
 	plan[0].resize(remarkCount);
 	plan[1].resize(remarkCount);
 	readPlan();
+	srand(time(0));
 }
 
 
@@ -150,6 +151,7 @@ void Plan::createRandomPlan(int elementCount)
 	plan[1].resize(remarkCount);
 	for (int i = 0; i < remarkCount; i++)
 	{
-		plan[0][i] = pow(-1.0, rand() % 2 + 1) * (double(rand() % 500) / 500);
+		plan[0][i] = pow(-1.0, rand() % 2 + 1) * (double(rand() % 450) / 500);
+		plan[1][i] = 1.0 / remarkCount;
 	}
 }

@@ -41,7 +41,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -151,18 +151,18 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OwnershipFunction.cpp" />
     <ClCompile Include="Plan.cpp" />
-    <ClCompile Include="Point.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DOptimization.h" />
     <ClInclude Include="LocalModel.h" />
     <ClInclude Include="OwnershipFunction.h" />
     <ClInclude Include="Plan.h" />
-    <ClInclude Include="Point.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="clasterCenter.txt" />
+    <Text Include="fish.txt" />
     <Text Include="fisher.txt" />
+    <Text Include="norm.txt" />
     <Text Include="plan.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -118,7 +118,7 @@ vector<vector<double>> LocalModel::invertMatrix(vector<vector<double>> matrix)
 /* вычислить матрицу фишера */
 vector<vector<double>> LocalModel::calcFisherMatrix(OwnershipFunction FCMfunction, Plan mainPlan)
 {
-	int sizeModel = 3;
+	int sizeModel = 2;
 	fisherMatrix.resize(sizeModel * FCMfunction.clasterCount);
 	for (int i = 0; i < sizeModel * FCMfunction.clasterCount; i++)
 	{
@@ -126,7 +126,7 @@ vector<vector<double>> LocalModel::calcFisherMatrix(OwnershipFunction FCMfunctio
 	}
 	for (int i = 0; i < FCMfunction.elementCount; i++)
 	{
-		sumFromFisher(squareFisher(FCMfunction[i], mainPlan[0][i], mainPlan[1][i]));
+		sumFromFisher(linearFisher(FCMfunction[i], mainPlan[0][i], mainPlan[1][i]));
 	}
 	return fisherMatrix;
 }
@@ -198,17 +198,17 @@ vector<vector<double>> LocalModel::getLocalMatrix()
 	y.resize(2);
 	
 	y[0].resize(1);
-	y[0][0] = 3;
+	y[0][0] = 1;
 	
 	y[1].resize(1);
-	y[1][0] = -1;
+	y[1][0] = 0.2;
 
 	return y;
 }
 
 double LocalModel::getY(double x)
 {
-	return 3 - x;
+	return 3 + 0.2 * x;
 }
 
 LocalModel::LocalModel()

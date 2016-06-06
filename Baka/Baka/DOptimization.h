@@ -18,6 +18,7 @@ private:
 	double endPoint;
 	double step; // ожидается 0.01
 	double isOptimal(double x);
+	double isOptimal(double x, Plan plan);
 public:
 	Plan getPlan(); // получить план
 	DOptimization(Plan *beginNonsingularPlan, double beginPoint, double endPoint, double step);

@@ -22,10 +22,31 @@ vector<vector<double>> DOptimization::multMatrix(vector<vector<double>> a, vecto
 
 double DOptimization::isOptimal(double x)
 {
-	vector<vector<double>> matrixFisherInX = mainLocalModel->calcSquareFisherMatrixInX(*mainOwnershipFunction, x);
+	vector<vector<double>> matrixFisherInX = mainLocalModel->calcLinearFisherMatrixInX(*mainOwnershipFunction, x);
 	vector<vector<double>> matrixFisher = mainLocalModel->invertMatrix(mainLocalModel->getFisherMatrix());
 	vector<double> multipleMatrix;
-	int sizeModel = 3;
+	int sizeModel = 2;
+	multipleMatrix.resize(mainOwnershipFunction->clasterCount * sizeModel);
+	double sum = 0;
+	for (int i = 0; i < mainOwnershipFunction->clasterCount * sizeModel; i++)
+	{
+		for (int j = 0; j < mainOwnershipFunction->clasterCount * sizeModel; j++)
+		{
+			multipleMatrix[i] += matrixFisher[i][j] * matrixFisherInX[j][i];
+		}
+		sum += multipleMatrix[i];
+	}
+	return sum;
+}
+
+double DOptimization::isOptimal(double x, Plan plan)
+{
+	OwnershipFunction tempOwnFunc(3, 2, 0.1, plan.remarkCount);
+	tempOwnFunc.calcFCMWithoutCenter(plan[0]);
+	vector<vector<double>> matrixFisherInX = mainLocalModel->calcLinearFisherMatrixInX(tempOwnFunc, x);
+	vector<vector<double>> matrixFisher = mainLocalModel->invertMatrix(mainLocalModel->getFisherMatrix());
+	vector<double> multipleMatrix;
+	int sizeModel = 2;
 	multipleMatrix.resize(mainOwnershipFunction->clasterCount * sizeModel);
 	double sum = 0;
 	for (int i = 0; i < mainOwnershipFunction->clasterCount * sizeModel; i++)
@@ -68,6 +89,8 @@ Plan DOptimization::optimize—ontinuousPlan()
 	mainOwnershipFunction->calcFCMWithoutCenter((*optimal)[0]);
 	mainLocalModel->calcFisherMatrix(*mainOwnershipFunction, *optimal);
 
+	Plan newPlan = *optimal;
+
 	for (double x = beginPoint; x <= endPoint; x += step)
 	{
 		double trace = isOptimal(x);
@@ -81,16 +104,22 @@ Plan DOptimization::optimize—ontinuousPlan()
 
 	if (abs(maxTrace - mainOwnershipFunction->elementCount) > 0.0001)
 	{
-		optimal->enlarge(maxX);
-		optimal->clean();
+		newPlan.enlarge(maxX);
+		newPlan.clean();
 
-		cout << maxTrace << endl;
+		double newTrace = isOptimal(maxX, newPlan);
 
-		return optimize—ontinuousPlan();
+		if (abs(newTrace - mainOwnershipFunction->elementCount) > 0.0001)
+		{
+			*optimal = newPlan;
+			return optimize—ontinuousPlan();
+		}
+		else return *optimal;
+
 	} 
 	else
 	{
-		return *optimal;
+		return newPlan;
 	}
 }
 
