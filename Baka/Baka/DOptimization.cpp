@@ -20,12 +20,12 @@ vector<vector<double>> DOptimization::multMatrix(vector<vector<double>> a, vecto
 	return result;
 }
 
-double DOptimization::isOptimal(double x)
+double DOptimization::isOptimal(Point x)
 {
 	vector<vector<double>> matrixFisherInX = mainLocalModel->calcSquareFisherMatrixInX(*mainOwnershipFunction, x);
 	vector<vector<double>> matrixFisher = mainLocalModel->invertMatrix(mainLocalModel->getFisherMatrix());
 	vector<double> multipleMatrix;
-	int sizeModel = 3;
+	int sizeModel = x.coord.size() * 2 + 1;
 	multipleMatrix.resize(mainOwnershipFunction->clasterCount * sizeModel);
 	double sum = 0;
 	for (int i = 0; i < mainOwnershipFunction->clasterCount * sizeModel; i++)
@@ -61,22 +61,31 @@ Plan DOptimization::getPlan()
 
 Plan DOptimization::optimize—ontinuousPlan()
 {
-	double maxX = 0;
+	Point maxX = 0;
 	double maxTrace = 0;
 
 	mainOwnershipFunction = new OwnershipFunction(3, 2, 0.1, optimal->remarkCount);
-	mainOwnershipFunction->calcFCMWithoutCenter((*optimal)[0]);
+	mainOwnershipFunction->calcFCMWithoutCenter(optimal->plan);
 	mainLocalModel->calcFisherMatrix(*mainOwnershipFunction, *optimal);
 
 	for (double x = beginPoint; x <= endPoint; x += step)
 	{
-		double trace = isOptimal(x);
-
-		if (abs(maxTrace - mainOwnershipFunction->elementCount) > abs(trace - mainOwnershipFunction->elementCount))
+		for (double y = beginPoint; y <= endPoint; y += step)
 		{
-			maxTrace = trace;
-			maxX = x;
+			vector<double> coord(optimal->plan.size());
+			coord[0] = x;
+			coord[1] = y;
+			Point newPoint(optimal->plan.size(), coord);
+
+			double trace = isOptimal(x);
+
+			if (abs(maxTrace - mainOwnershipFunction->elementCount) > abs(trace - mainOwnershipFunction->elementCount))
+			{
+				maxTrace = trace;
+				maxX = newPoint;
+			}
 		}
+		
 	}
 
 	if (abs(maxTrace - mainOwnershipFunction->elementCount) > 0.0001)
@@ -96,9 +105,9 @@ Plan DOptimization::optimize—ontinuousPlan()
 
 Plan DOptimization::optimizeDiscretePlan()
 {
-	double maxX = 0;
+	Point maxX = 0;
 	double maxTrace = 0;
-	vector<double> arrayX = (*optimal)[0];
+	vector<Point> arrayX = optimal->plan;
 
 	mainOwnershipFunction = new OwnershipFunction(3, 2, 0.1, optimal->remarkCount);
 	mainOwnershipFunction->calcFCMWithoutCenter(arrayX);
@@ -106,30 +115,38 @@ Plan DOptimization::optimizeDiscretePlan()
 
 	for (double x = beginPoint; x <= endPoint; x += step)
 	{
-		if (find(arrayX.begin(), arrayX.end(), x) == arrayX.end())
+		for (double y = beginPoint; y <= endPoint; y += step)
 		{
-			double trace = isOptimal(x);
+			vector<double> coord(optimal->plan.size());
+			coord[0] = x;
+			coord[1] = y;
+			Point newPoint(optimal->plan.size(), coord);
 
-			if (maxTrace < trace)
+			if (find(arrayX.begin(), arrayX.end(), x) == arrayX.end())
 			{
-				maxTrace = trace;
-				maxX = x;
-			}
+				double trace = isOptimal(x);
+
+				if (maxTrace < trace)
+				{
+					maxTrace = trace;
+					maxX = x;
+				}
+			}		
 		}		
 	}
 
 	optimal->enlargeDiscrete(maxX);
 
-	double minX = 0;
+	Point minX = 0;
 	double minTrace = 0;
 
 	mainOwnershipFunction = new OwnershipFunction(3, 2, 0.1, optimal->remarkCount);
-	mainOwnershipFunction->calcFCMWithoutCenter((*optimal)[0]);
+	mainOwnershipFunction->calcFCMWithoutCenter(optimal->plan);
 	mainLocalModel->calcFisherMatrix(*mainOwnershipFunction, *optimal);
 
-	for (int i = 0; i < (*optimal)[0].size(); i++)
+	for (int i = 0; i < optimal->plan.size(); i++)
 	{
-		double trace = isOptimal((*optimal)[0][i]);
+		double trace = isOptimal(optimal->plan[i]);
 
 		if (minTrace > trace || minTrace == 0)
 		{

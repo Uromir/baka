@@ -1,12 +1,12 @@
 ﻿#include "OwnershipFunction.h"
 
 /* посчитать сумму учавствующую в алгоритме FCM, с участием начальной матрицы принадлежности и иксов */
-double OwnershipFunction::summWithBeginOwnershipMatrix(vector<double> x, vector<vector<double>> ownershipMatrix,int i)
+double OwnershipFunction::summWithBeginOwnershipMatrix(vector<Point> x, vector<vector<double>> ownershipMatrix,int i)
 {
 	double sum = 0;
 	for (int j = 0; j < elementCount; j++)
 	{
-		sum += pow(ownershipMatrix[j][i], exponentialWeight) * abs(x[j]);
+		sum += pow(ownershipMatrix[j][i], exponentialWeight) * x[j].Norm();
 	}
 	return sum;
 }
@@ -68,61 +68,14 @@ void OwnershipFunction::generateBeginOwnershipMatrix()
 	}
 }
 
-/* посчитать значение целевой функции с матрицей принадлежности прошлой итерации */
-double OwnershipFunction::calcObjectveFunction(vector<double> x, vector<vector<double>> distanceFromCenter)
-{
-	double sum = 0;
-	for (int i = 0; i < elementCount; i++)
-	{
-		for (int j = 0; j < clasterCount; j++)
-		{
-			sum += pow(beginOwnershipMatrix[i][j], exponentialWeight) * pow(distanceFromCenter[i][j], 2);
-		}
-	}
-	return sum;
-}
-
-/* посчитать значение целевой функции */
-double OwnershipFunction::calcObjectveFunction(vector<double> x)
-{
-	// массив центров кластеров
-	vector<double> clasterCenter;
-	clasterCenter.resize(clasterCount);
-	for (int i = 0; i < clasterCount; i++)
-	{
-		// вычисляем i-ый центр кластера (для новой матрицы принадлежности)
-		clasterCenter[i] = summWithBeginOwnershipMatrix(x, ownershipMatrix, i) / summWithBeginOwnershipMatrix(ownershipMatrix, i);
-	}
-	// матрица расстояний от объекта до центра кластера
-	vector<vector<double>> distanceFromCenter;
-	distanceFromCenter.resize(elementCount);
-	for (int i = 0; i < elementCount; i++)
-	{
-		distanceFromCenter[i].resize(clasterCount);
-		for (int j = 0; j < clasterCount; j++)
-		{
-			// вычисляем расстояние от i-го объекта до j-го кластера
-			distanceFromCenter[i][j] = sqrt(pow(abs(x[i] - clasterCenter[j]), 2));
-		}
-	}
-	double sum = 0;
-	for (int i = 0; i < elementCount; i++)
-	{
-		for (int j = 0; j < clasterCount; j++)
-		{
-			sum += pow(beginOwnershipMatrix[i][j], exponentialWeight) * pow(distanceFromCenter[i][j], 2);
-		}
-	}
-	return sum;
-}
-
 /* считать центры кластеров из файла */
-void OwnershipFunction::readClasterCenter(vector<double> &clasterCenter)
+void OwnershipFunction::readClasterCenter(vector<Point> &clasterCenter)
 {
 	ifstream in("clasterCenter.txt");
 	for (int i = 0; i < clasterCount; i++)
 	{
-		in >> clasterCenter[i];
+		for (int j = 0; j < clasterCenter[i].coord.size(); j++)
+			in >> clasterCenter[i].coord[j];
 	}
 }
 
@@ -144,44 +97,7 @@ OwnershipFunction::OwnershipFunction(int clasterCount, int exponentialWeight, do
 	generateBeginOwnershipMatrix();
 }
 
-/* алгоритм FCM */
-void OwnershipFunction::calcFCM(vector<double> x)
-{
-	// массив центров кластеров
-	for (int i = 0; i < clasterCount; i++)
-	{
-		// вычисляем i-ый центр кластера
-		clasterCenter[i] = summWithBeginOwnershipMatrix(x, beginOwnershipMatrix, i)/ summWithBeginOwnershipMatrix(beginOwnershipMatrix, i);
-	}
-	// матрица расстояний от объекта до центра кластера
-	vector<vector<double>> distanceFromCenter;
-	distanceFromCenter.resize(elementCount);
-	for (int i = 0; i < elementCount; i++)
-	{
-		distanceFromCenter[i].resize(clasterCount);
-		for (int j = 0; j < clasterCount; j++)
-		{
-			// вычисляем расстояние от i-го объекта до j-го кластера
-			distanceFromCenter[i][j] = sqrt(pow(abs(x[i] - clasterCenter[j]), 2));
-		}
-	}
-	// вычисляем матрицу принадлежности
-	for (int i = 0; i < elementCount; i++)
-	{
-		for (int j = 0; j < clasterCount; j++)
-		{
-			ownershipMatrix[i][j] = 1 / (summWithDistanceFromCenter(distanceFromCenter[i], j));
-		}
-	}
-
-	if (abs(calcObjectveFunction(x) - calcObjectveFunction(x, distanceFromCenter)) > eps)
-	{
-		beginOwnershipMatrix = ownershipMatrix;
-		calcFCM(x);
-	}
-}
-
-void OwnershipFunction::calcFCMWithoutCenter(vector<double> x)
+void OwnershipFunction::calcFCMWithoutCenter(vector<Point> x)
 {
 	readClasterCenter(clasterCenter);
 	// матрица расстояний от объекта до центра кластера
@@ -193,7 +109,7 @@ void OwnershipFunction::calcFCMWithoutCenter(vector<double> x)
 		for (int j = 0; j < clasterCount; j++)
 		{
 			// вычисляем расстояние от i-го объекта до j-го кластера
-			distanceFromCenter[i][j] = sqrt(pow(abs(x[i] - clasterCenter[j]), 2));
+			distanceFromCenter[i][j] = sqrt(pow((x[i] - clasterCenter[j]).Norm(), 2));
 		}
 	}
 	// вычисляем матрицу принадлежности
@@ -206,7 +122,7 @@ void OwnershipFunction::calcFCMWithoutCenter(vector<double> x)
 	}
 }
 
-vector<double> OwnershipFunction::FCMLineInX(double x)
+vector<double> OwnershipFunction::FCMLineInX(Point x)
 {
 	vector<double> result;
 	result.resize(clasterCount);
@@ -216,7 +132,7 @@ vector<double> OwnershipFunction::FCMLineInX(double x)
 
 	for (int i = 0; i < clasterCount; i++)
 	{
-		distances[i] = sqrt(pow(abs(x - clasterCenter[i]), 2));
+		distances[i] = sqrt(pow((x - clasterCenter[i]).Norm(), 2));
 	}
 
 	for (int i = 0; i < clasterCount; i++)

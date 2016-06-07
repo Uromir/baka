@@ -63,7 +63,7 @@ Point Point::operator - (Point x)
 	return result;
 }
 
-Point Point::operator - (Point x)
+Point Point::operator + (Point x)
 {
 	Point result(this->size);
 	for (int i = 0; i < this->size; i++)

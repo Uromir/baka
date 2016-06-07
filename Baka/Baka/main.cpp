@@ -2,7 +2,7 @@
 
 int main()
 {
-	Plan mainPlan(6);
+	Plan mainPlan(6, 1);
 	DOptimization mainOptimizationAlgoritm(&mainPlan, -0.9, 0.9, 0.01);
 	Plan optimal = mainOptimizationAlgoritm.optimizeDiscretePlan();
 	return 0;
