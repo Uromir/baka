@@ -55,5 +55,6 @@
     <Text Include="plan.txt" />
     <Text Include="clasterCenter.txt" />
     <Text Include="fisher.txt" />
+    <Text Include="fi.txt" />
   </ItemGroup>
 </Project>

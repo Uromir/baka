@@ -74,12 +74,13 @@ void OwnershipFunction::readClasterCenter(vector<Point> &clasterCenter)
 	ifstream in("clasterCenter.txt");
 	for (int i = 0; i < clasterCount; i++)
 	{
-		for (int j = 0; j < clasterCenter[i].coord.size(); j++)
+		clasterCenter[i] = Point(size);
+		for (int j = 0; j < size; j++)
 			in >> clasterCenter[i].coord[j];
 	}
 }
 
-OwnershipFunction::OwnershipFunction(int clasterCount, int exponentialWeight, double eps, int elementCount)
+OwnershipFunction::OwnershipFunction(int clasterCount, int exponentialWeight, double eps, int elementCount, int size)
 {
 	this->clasterCount = clasterCount;
 	this->exponentialWeight = exponentialWeight;
@@ -88,6 +89,7 @@ OwnershipFunction::OwnershipFunction(int clasterCount, int exponentialWeight, do
 	beginOwnershipMatrix.resize(elementCount);
 	ownershipMatrix.resize(elementCount);
 	clasterCenter.resize(clasterCount);
+	this->size = size;
 	for (int i = 0; i < elementCount; i++)
 	{
 		beginOwnershipMatrix[i].resize(clasterCount);

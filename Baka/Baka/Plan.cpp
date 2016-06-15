@@ -71,6 +71,23 @@ void Plan::reduce(Point x)
 	}
 }
 
+void Plan::reduceDiscrete(Point x)
+{
+	remarkCount--;
+	for (int i = 0; i < remarkCount + 1; i++)
+	{
+		plan[i].weight = 1.0 / remarkCount;
+	}
+	for (int i = 0; i < remarkCount + 1; i++)
+	{
+		if (x == plan[i])
+		{
+			plan.erase(plan.begin() + i);
+			break;
+		}
+	}
+}
+
 void Plan::clean()
 {
 	vector<int> processedPoint;
@@ -105,7 +122,7 @@ void Plan::clean()
 				remarkCount--;
 			}
 		}
-		else if (plan[i].weight < 0.01)
+		else if (plan[i].weight < 0.0001)
 		{
 			plan.erase(plan.begin() + i);
 			remarkCount--;
@@ -119,7 +136,7 @@ vector<vector<double>> Plan::getLocalModelMatrix()
 	matrix.resize(remarkCount);
 	for (int i = 0; i < remarkCount; i++)
 	{
-		matrix[i].resize(dimensionSpace);
+		matrix[i].resize(dimensionSpace + 1);
 
 		matrix[i][0] = 1;
 		for (int j = 0; j < dimensionSpace; j++)

@@ -162,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="clasterCenter.txt" />
+    <Text Include="fi.txt" />
     <Text Include="fisher.txt" />
     <Text Include="plan.txt" />
   </ItemGroup>

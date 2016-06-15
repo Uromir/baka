@@ -18,6 +18,7 @@ public:
 	int clasterCount; // количество кластеров
 	int exponentialWeight; // экспоненциальный вес \ коэффициент нечеткости
 	double eps; // параметр останова алгоритма
+	int size; // размерность пространства
 	int elementCount; // количество элементов объекта
 	vector<Point> clasterCenter; // центры кластеров
 	vector<vector<double>> ownershipMatrix; // матрица принадлежности
@@ -27,7 +28,7 @@ public:
 	vector<vector<double>> getOwnerchipMatrix();
 	vector<double> FCMLineInX(Point x); // вычислить значение каждой функции принадлежности в переданном Х
 	vector<vector<double>> getDiagOwnershipMatrix(int i);
-	OwnershipFunction(int clasterCount, int exponentialWeight, double eps, int elementCount);
+	OwnershipFunction(int clasterCount, int exponentialWeight, double eps, int elementCount, int size);
 	~OwnershipFunction();
 	vector<double> operator[](int i);
 };

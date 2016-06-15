@@ -16,6 +16,7 @@ public:
 	void enlarge(Point x);
 	void enlargeDiscrete(Point x);
 	void reduce(Point x);
+	void reduceDiscrete(Point x);
 	void clean();
 	void createRandomPlan(int elementCount);
 	vector<vector<double>> getLocalModelMatrix();

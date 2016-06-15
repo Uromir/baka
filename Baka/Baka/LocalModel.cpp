@@ -62,38 +62,6 @@ vector<vector<double>> LocalModel::squareFisher(vector<double> FCMLine, Point x,
 						mult *= pow(x.coord[num - 1], k / x.coord.size() + 1);
 					}
 
-					/*switch (k)
-					{
-					case 1:
-						mult *= x.coord[0];
-						break;
-					case 2:
-						mult *= x.coord[1];
-						break;
-					case 3:
-						mult *= x.coord[0] * x.coord[0];
-						break;
-					case 4:
-						mult *= x.coord[1] * x.coord[1];
-						break;
-					}
-
-					switch (l)
-					{
-					case 1:
-						mult *= x.coord[0];
-						break;
-					case 2:
-						mult *= x.coord[1];
-						break;
-					case 3:
-						mult *= x.coord[0] * x.coord[0];
-						break;
-					case 4:
-						mult *= x.coord[1] * x.coord[1];
-						break;
-					}*/
-
 					currentFisherMatrix[i * size][j * size] = FCMLine[i] * FCMLine[j] * mult * weight;
 				}
 			}
@@ -171,7 +139,7 @@ vector<vector<double>> LocalModel::invertMatrix(vector<vector<double>> matrix)
 /* вычислить матрицу фишера */
 vector<vector<double>> LocalModel::calcFisherMatrix(OwnershipFunction FCMfunction, Plan mainPlan)
 {
-	int sizeModel = 3;
+	int sizeModel = mainPlan.plan[0].coord.size() + 1;
 	fisherMatrix.resize(sizeModel * FCMfunction.clasterCount);
 	for (int i = 0; i < sizeModel * FCMfunction.clasterCount; i++)
 	{
@@ -179,7 +147,7 @@ vector<vector<double>> LocalModel::calcFisherMatrix(OwnershipFunction FCMfunctio
 	}
 	for (int i = 0; i < FCMfunction.elementCount; i++)
 	{
-		sumFromFisher(squareFisher(FCMfunction[i], mainPlan[i], mainPlan[i].weight));
+		sumFromFisher(linearFisher(FCMfunction[i], mainPlan[i], mainPlan[i].weight));
 	}
 	return fisherMatrix;
 }
@@ -263,24 +231,32 @@ vector<vector<double>> LocalModel::getFisherMatrix()
 	return fisherMatrix;
 }
 
-vector<vector<double>> LocalModel::getLocalMatrix()
+vector<vector<double>> LocalModel::getLocalMatrix(Plan plan)
 {
 	vector<vector<double>> y;
 
-	y.resize(2);
-	
-	y[0].resize(1);
-	y[0][0] = 3;
-	
-	y[1].resize(1);
-	y[1][0] = -1;
+	y.resize(plan.remarkCount);
+
+	for (int i = 0; i < plan.remarkCount; i++)
+	{
+		y[i].resize(1);
+		y[i][0] = getY(plan[i]);
+		y[i][0] += y[i][0] * (int(pow(-1.0, rand() % 2) * rand()) % 15) / 100;
+	}
 
 	return y;
 }
 
 double LocalModel::getY(Point x)
 {
-	return 5; // тут какая-то модель
+	if (x[0] <= -0.3)
+		return 3 + 0.2 * x[0];
+
+	if (x[0] > -0.3 && x[0] <= 0.3)
+		return 1 - 4 * x[0];
+
+	if (x[0] > 0.3)
+		return 0.6 + 0.5 * x[0];
 }
 
 LocalModel::LocalModel()
